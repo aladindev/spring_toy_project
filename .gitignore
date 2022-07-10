@@ -36,5 +36,8 @@ out/
 ### VS Code ###
 .vscode/
 
-### Intellij IDEA ###
-application-oracle.properties
+### key ###
+application-key.properties
+
+## oracle wallet ignore ##
+Wallet_aladin/
