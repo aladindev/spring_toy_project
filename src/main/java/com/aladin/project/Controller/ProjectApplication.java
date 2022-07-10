@@ -1,4 +1,4 @@
-package com.aladin.project;
+package com.aladin.project.Controller;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
