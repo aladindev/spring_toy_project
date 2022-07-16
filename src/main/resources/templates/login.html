@@ -12,17 +12,19 @@
     <header>Login Form</header>
     <form>
         <div class="input-field">
-            <input type="text" required>
+            <!--<input type="text" required>-->
+            <input type="text">
             <label>Email or Username</label>
         </div>
         <div class="input-field">
-            <input class="pswrd" type="password" required>
+            <!--<input class="pswrd" type="password" required>-->
+            <input class="pswrd" type="password"d>
             <span class="show">SHOW</span>
             <label>Password</label>
         </div>
         <div class="button">
             <div class="inner"></div>
-            <button>LOGIN</button>
+            <a href="acntList.do">LOGIN</a>
         </div>
     </form>
     <div class="auth">
@@ -41,7 +43,7 @@
     </div>
 </div>
 <script>
-         var input = document.querySelector('.pswrd');
+         <!--var input = document.querySelector('.pswrd');
          var show = document.querySelector('.show');
          show.addEventListener('click', active);
          function active(){
@@ -54,7 +56,7 @@
              show.textContent = "SHOW";
              show.style.color = "#111";
            }
-         }
+         }-->
       </script>
 </body>
 </html>
