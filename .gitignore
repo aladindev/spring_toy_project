@@ -39,5 +39,11 @@ out/
 ### key ###
 application-key.properties
 
+## properties ##
+application.properties
+
+##.DS_Store##
+.DS_Store
+
 ## oracle wallet ignore ##
 Wallet_aladin/

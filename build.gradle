@@ -23,6 +23,7 @@ dependencies {
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor('org.projectlombok:lombok')
 	runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
 	// Oracle 지갑 관련
 	implementation 'com.oracle.ojdbc:ucp'
@@ -32,6 +33,12 @@ dependencies {
 	implementation 'com.oracle.database.security:osdt_core'
 	// https://mvnrepository.com/artifact/com.oracle.database.security/osdt_cert
 	implementation 'com.oracle.database.security:osdt_cert'
+
+	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+	// https://mvnrepository.com/artifact/com.auth0/java-jwt
+	implementation group: 'com.auth0', name: 'java-jwt', version: '3.18.3'
+
 }
 
 tasks.named('test') {
