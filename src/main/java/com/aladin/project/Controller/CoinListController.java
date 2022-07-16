@@ -88,9 +88,14 @@ public class CoinListController {
             Type listType = TypeToken.get(listMap.getClass()).getType();
             listMap = gson.fromJson(jsonArray.toJSONString(), new TypeToken<List<Map<String, Object>>>() {}.getType());
 
+            //
+            String redirectUrl = "minChartList.do?";
+            int idx = 1;
             for(Map map : listMap) {
-                log.info("" + map + "\n");
+                redirectUrl += "ownCoin" + String.valueOf(idx++) + "=" + map.get("currency") + "&" ;
             }
+
+            log.info("redirectUrl :::: " + redirectUrl);
         } catch (IOException e) {
             log.error("" + e.getStackTrace());
         }
