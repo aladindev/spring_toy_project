@@ -10,11 +10,11 @@ import java.util.Map;
 public class HttpConnectModule {
 
 
-    public List<Map<String, Object>> httpConnect(String k, String s) {
+    /*public List<Map<String, Object>> httpConnect(String k, String s) {
 
 
 
 
         return null;
-    }
+    }*/
 }
