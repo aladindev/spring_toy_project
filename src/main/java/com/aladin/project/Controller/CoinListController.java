@@ -117,7 +117,7 @@ public class CoinListController {
 
         return result;
     }
-
+    //전자지갑 에러 확인
     @Bean
     public void connectHttp() {
 
