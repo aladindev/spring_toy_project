@@ -22,11 +22,16 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +51,9 @@ public class CoinListController {
     private String acntListUrl;
 
     @GetMapping("/acntList.do")
-    public void acntList() {
+    public ModelAndView acntList() {
+
+        ModelAndView mv = null;
 
         Algorithm algorithm = Algorithm.HMAC256(sKey);
         String jwtToken = JWT.create()
@@ -74,12 +81,12 @@ public class CoinListController {
             BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
             //버퍼 라인으로 읽어들인다.
-            while(null != (line = br.readLine())) {
+            while (null != (line = br.readLine())) {
                 content.append(line);
             }
             //JSONArray로 캐스팅
             Object obj = JSONValue.parse(content.toString());
-            JSONArray jsonArray = (JSONArray)obj;
+            JSONArray jsonArray = (JSONArray) obj;
 
             log.info("jsonData : " + jsonArray);
 
@@ -88,36 +95,53 @@ public class CoinListController {
             List<Map<String, Object>> listMap = new ArrayList<Map<String, Object>>();
 
             Type listType = TypeToken.get(listMap.getClass()).getType();
-            listMap = gson.fromJson(jsonArray.toJSONString(), new TypeToken<List<Map<String, Object>>>() {}.getType());
+            listMap = gson.fromJson(jsonArray.toJSONString(), new TypeToken<List<Map<String, Object>>>() {
+            }.getType());
 
-            //
-            String redirectUrl = "minChartList.do?";
+            //보유코인 json
+            String redirectUrl = "minChartList.do?ownCoins=";
+            String coinListStr = null;
+            JSONArray ownCoinArr = new JSONArray();
+
+
             int idx = 1;
-            for(Map map : listMap) {
-                redirectUrl += "ownCoin" + String.valueOf(idx++) + "=" + map.get("currency") + "&" ;
+            for (Map map : listMap) {
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("ownCoin"+(idx++), map.get("unit_currency") + "-" + map.get("currency"));
+                ownCoinArr.add(jsonObj);
             }
+            coinListStr = ownCoinArr.toJSONString();
 
-            log.info("redirectUrl :::: " + redirectUrl);
+            //JSON 배열 URL인코딩
+            redirectUrl += URLEncoder.encode(coinListStr, "UTF-8");
+
+            RedirectView rv = new RedirectView(redirectUrl);
+            mv = new ModelAndView(rv);
+
         } catch (IOException e) {
             log.error("" + e.getStackTrace());
         }
+        return mv;
     }
 
-    @GetMapping("minChartList.do")
-    public String minChartList() throws IOException {
+    @GetMapping("minChartList.do") /*분봉차트*/
+    public String minChartList(HttpServletRequest req) throws IOException {
 
-            HttpClient client = HttpClientBuilder.create().build();
-            HttpGet request = new HttpGet("https://api.upbit.com/v1/candles/minutes/1?market=KRW-GRS&count=1");
+        String ownCoins = URLDecoder.decode(req.getParameter("ownCoins"), "UTF-8");
+        log.info("ownCoins :: " + ownCoins);
 
-            HttpResponse response = client.execute(request);
-            HttpEntity entity = response.getEntity();
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpGet request = new HttpGet("https://api.upbit.com/v1/candles/minutes/1?market=KRW-GRS&count=1");
+        //oracle 자율 트랜잭션
+        HttpResponse response = client.execute(request);
+        HttpEntity entity = response.getEntity();
 
-            String result = EntityUtils.toString(entity, "UTF-8");
-            log.info("result ::: " + result);
+        String result = EntityUtils.toString(entity, "UTF-8");
+        log.info("result ::: " + result);
 
         return result;
     }
-    //전자지갑 에러 확인 
+    //전자지갑 에러 확인
     @Bean
     public void connectHttp() {
 
